@@ -1,0 +1,121 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "a8d4e870-3909-47c7-9e07-c662993e36df",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "71b9d6e5-5685-43c3-be01-a964f47c668f",
+      "name": "Webhook",
+      "webhookId": "a8d4e870-3909-47c7-9e07-c662993e36df"
+    },
+    {
+      "parameters": {
+        "url": "https://api.coinbase.com/v2/prices/BTC-INR/spot",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "ccf73f4d-b60e-405b-82c1-baa46f020d00",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=The current live price of Bitcoin in INR is: {{ $json.data.amount }}. Write a short, professional 2-line market update for an investor.",
+        "messages": {
+          "messageValues": []
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        448,
+        0
+      ],
+      "id": "eeabc81a-4211-4b0f-8b64-a3c79242b017",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        384,
+        208
+      ],
+      "id": "241f1258-0e22-4298-8a74-5d65f00c9007",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "euOUZLNA4U83xPTG",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "8d267471-2f47-4174-8c94-cc11a1c56d29",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a21e41de6aa7ad9ab2cde817895f5e20d948ae3462916c27dc2dd5c6d4467a58"
+  },
+  "nodeGroups": [],
+  "id": "3Z0AGrT36I6qE5VB",
+  "tags": []
+}
